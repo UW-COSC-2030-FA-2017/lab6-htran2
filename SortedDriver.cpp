@@ -1,3 +1,6 @@
+//Huy Tran
+//Lab 6
+//Oct 26 2017
 // SortedDriver.cpp
 
 // tom bailey   1445  25 mar 2014
@@ -13,8 +16,9 @@
 #include <vector>
 #include <algorithm>
 
-
 using namespace std;
+using std::vector;
+using std::sort;
 
 
 // post: a sorted vector of listSize random doubles from
@@ -63,8 +67,33 @@ getWords(size_t numWords, size_t wordLength, string alphabet)
 double
 mostIsolated(vector<double> & number)
 {
-	// STUB  STUB  STUB
-	return -123.456;
+	int size = number.size();
+	int currentIndexOfResult = 0;
+	double currentMaximumDifference = DBL_MIN;
+	double tmp;
+	for (int i = 0; i < size; i++) {
+		if (i == (size - 1)) {
+			tmp = number.at(i) - number.at(i - 1);
+		}
+		else if (i == 0) {
+			tmp = number.at(i + 1) - number.at(i);
+		}
+		else {
+			double difGreater = number.at(i + 1) - number.at(i);
+			double difLess = number.at(i) - number.at(i - 1);
+			if (difGreater < difLess) { 
+				tmp = difGreater; 
+			}
+			else { tmp = difLess; }
+		}
+
+		if (tmp > currentMaximumDifference) { // if i is more isolated than the current most isolated
+			currentIndexOfResult = i;
+			currentMaximumDifference = tmp;
+		}
+	}
+
+	return number.at(currentIndexOfResult);
 }
 
 
@@ -74,8 +103,40 @@ mostIsolated(vector<double> & number)
 int
 unmatched(list<string> & A, list<string> & B)
 {
-	// STUB  STUB  STUB
-	return -1;
+	int result = 0;
+	string last = "";
+	bool lastNotInB = false;
+	std::list<string>::iterator iterA = A.begin();
+	std::list<string>::iterator iterB = B.begin();
+	
+	while (iterA != A.end() && iterB != B.end()) {
+		if (*iterA == *iterB) { // if A == B, increment both, set last = A and last is in B.
+			lastNotInB = false;
+			last = *iterA;
+			iterA++;
+			iterB++;
+		}
+		else if (*iterA < *iterB) {
+			if (*iterA != last) {
+				result++;
+				last = *iterA;
+				lastNotInB = true;
+			}
+			else { // A = last
+				if (lastNotInB) { // and last is not in B, so A is not in B
+					result++;
+				}
+			}
+			iterA++;//since A < B, we increment A
+		}
+		else { // A > B
+			iterB++;
+			if (iterB == B.end()) {
+				result++;
+			}
+		}
+	}
+	return result;
 }
 
 
